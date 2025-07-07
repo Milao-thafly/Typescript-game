@@ -17,6 +17,11 @@
 
 
 //
+
+
+import {organs} from "./organ";
+
+
 let seconds: number = 20;
 // Il va initialiser l'interval de nos chiffre à 0 pour le décompte
 let timerInterval: number | null = null;
@@ -29,6 +34,7 @@ function padStartManual(str: string, targetLength: number,padChar: string): stri
     }
     return str;
 }
+
 
 //Ici on va initialiser le padChar des éléments concerné par notre variable de temps en premier lieux 
 //Lui dire qu'il nous faut en partant d'une conversion en string nos seconde. Qu'il faut toujours 2 chiffre d'affiché.
@@ -112,66 +118,21 @@ window.addEventListener("DOMContentLoaded", () => {
     startGameTimer();
 });
 
-// démare le jeux au chargement de la page. Trouver comment faire avec bouton qui disparait.
 
 
 
-// // Durée du timer en secondes
-// let seconds: number = 30;
-
-// // Référence à l'intervalle pour pouvoir l'arrêter plus tard
-// let timerInterval: number | null = null;
 
 
-// /**
-//  * Met à jour le texte affiché dans l'élément HTML du timer.
-//  */
-// function updateTimerDisplay(): void {
-//     const timerElement = document.getElementById("timer");
-//     if (timerElement) {
-//         timerElement.textContent = String(seconds).padStart(2, "0");
-//     }
-// }
 
-// /**
-//  * Démarre le compte à rebours pour le jeu.
-//  */
-// function startGameTimer(): void {
-//     // Affiche tout de suite la valeur initiale (ex: 30)
-//     updateTimerDisplay();
+export class OrganLand {
+    constructor(){
+        this.setupHitBox();
+    }
 
-//     // Lance le décompte chaque seconde
-//     timerInterval = window.setInterval(() => {
-//         seconds--;
-
-//         updateTimerDisplay();
-
-//         // Arrête le timer si on arrive à 0
-//         if (seconds <= 0 && timerInterval !== null) {
-//             clearInterval(timerInterval);
-//             timerInterval = null;
-
-//             // Optionnel : appeler une fonction de fin de jeu
-//             endGame();
-//         }
-//     }, 1000);
-// }
-
-// /**
-//  * Fonction appelée à la fin du timer.
-//  * Tu peux y mettre une animation, un écran "Game Over", etc.
-//  */
-// function endGame(): void {
-//     console.log("Le temps est écoulé !");
-//     const timerElement = document.getElementById("timer");
-//     if (timerElement) {
-//         timerElement.textContent = "00";
-//         timerElement.classList.add("timer-finished"); // style CSS facultatif
-//     }
-// }
-
-// // Démarre automatiquement le jeu au chargement de la page
-// window.addEventListener("DOMContentLoaded", () => {
-//     startGameTimer();
-// });
+    private setupHitBox() {
+        organs.forEach((organ) => {
+            const hitbox: HTMLDivElement| null = document.createElement ("div")
+        })
+    } 
+}
 export{}

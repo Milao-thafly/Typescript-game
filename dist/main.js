@@ -13,6 +13,7 @@
 // }
 // 
 //
+import { organs } from "./organ";
 let seconds = 20;
 // Il va initialiser l'interval de nos chiffre à 0 pour le décompte
 let timerInterval = null;
@@ -89,4 +90,13 @@ function endGame() {
 window.addEventListener("DOMContentLoaded", () => {
     startGameTimer();
 });
-export {};
+export class OrganLand {
+    constructor() {
+        this.setupHitBox();
+    }
+    setupHitBox() {
+        organs.forEach((organ) => {
+            const hitbox = document.createElement("div");
+        });
+    }
+}
