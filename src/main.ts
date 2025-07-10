@@ -141,7 +141,7 @@ export class OrganLand {
         //     throw new Error("ENCULÉ!!!!");
 
         // }
-
+        this.setupBucketDrop();
         this.setupHitBox();
     }
 
@@ -185,19 +185,51 @@ export class OrganLand {
                         console.log("bieng");
 
                     });
+                    organDragable.setAttribute("draggable", "true");
+                    organDragable.dataset.name = organ.name;
+
+                    organDragable.addEventListener("dragstart", (drag) => {
+                        drag.dataTransfer?.setData("text/plain", organ.name)
+                    })
                     hitbox.appendChild(organDragable);
                 })
             }
 
 
             this.playground[0].appendChild(hitbox)
+
+            
         })
 
 
 
     }
 
+    private setupBucketDrop(): void {
+        
+        const bucket =document.querySelector(".bucket") as HTMLElement;
+        if (!bucket) return;
 
+        bucket.addEventListener("dragover", (draged) => {
+            draged.preventDefault();
+        });
+        bucket.addEventListener("drop", (droped) => {
+            droped.preventDefault();
+            const organName = droped.dataTransfer?.getData("text/plain");
+
+            if(!organName) return
+
+            const draggedOrgans = document.querySelectorAll(".organs");
+
+            draggedOrgans.forEach((organ) => {
+                if(organ instanceof HTMLImageElement && organ.dataset.name === organName) {
+                    organ.style.opacity = "0";
+                    organ.style.pointerEvents = "none";
+                }
+            })
+        })
+        
+    }
 
 };
 
