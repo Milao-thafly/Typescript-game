@@ -2,8 +2,10 @@ export type OrganName = "Heart" | "Brain" | "Stomach" | "Lungs" | "Gut" | "Bicep
 
 export interface OrganHitbox {
     name: OrganName;
-    x: number;
-    y: number;
+    left: number;
+    top: number;
     width: number;
     height: number;
+    imgSrc: string;
+
 }

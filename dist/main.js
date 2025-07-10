@@ -13,7 +13,8 @@
 // }
 // 
 //
-import { organs } from "./organ";
+import { organs } from "./organ.js";
+//TIMER
 let seconds = 20;
 // Il va initialiser l'interval de nos chiffre à 0 pour le décompte
 let timerInterval = null;
@@ -32,6 +33,7 @@ const timer = padStartManual(String(seconds), 2, "0");
 // On va lui créer une constante au nom de timerElement en ciblant la div timer.
 // on va changer le texte de la div avec padStartManual plus en haut 
 function updateTimerDisplay() {
+    console.log("Timer updated to:", seconds);
     const timerElement = document.getElementById("timer");
     if (timerElement) {
         // padStartManual veux dire à quel moment je commence mon padding pour remplacer le troue par le 0.
@@ -42,6 +44,7 @@ function updateTimerDisplay() {
 }
 //La on va dire dans une fonction que notre timer va commencer grace au chargement de la page. A changer 
 function startGameTimer() {
+    console.log("Starting timer...");
     //Ici on cible notre fonction updateTimerDisplay
     updateTimerDisplay();
     //Ici je vais demander à la variable global de setInterval de 1000 millisecondes pour enlever 1 seconde. 
@@ -89,14 +92,57 @@ function endGame() {
 }
 window.addEventListener("DOMContentLoaded", () => {
     startGameTimer();
+    new OrganLand();
 });
+//CLASS POUR PLAYGROUND D'ORGAN
 export class OrganLand {
     constructor() {
+        this.selectedOrgan = null;
+        this.playground = [];
+        const play = document.querySelectorAll(".playground");
+        this.playground = Array.from(play);
+        // if(play){
+        //     throw new Error("ENCULÉ!!!!");
+        // }
         this.setupHitBox();
     }
     setupHitBox() {
+        const margin = 20;
         organs.forEach((organ) => {
             const hitbox = document.createElement("div");
+            hitbox.classList.add("hitbox");
+            hitbox.style.position = "absolute";
+            hitbox.style.left = `${organ.left}px`;
+            hitbox.style.top = `${organ.top}px`;
+            hitbox.style.width = `${organ.width + 20}px`;
+            hitbox.style.height = `${organ.height + 20}px`;
+            hitbox.style.zIndex = "3";
+            hitbox.addEventListener("click", (canDrag) => {
+                canDrag.stopPropagation();
+                this.selectedOrgan = organ;
+            });
+            if (organs !== null) {
+                organs.forEach((organs) => {
+                    const bod = document.getElementsByClassName("organInBody");
+                    const organDragable = document.createElement("img");
+                    organDragable.src = organ.imgSrc;
+                    organDragable.alt = organ.name;
+                    organDragable.classList.add("organs");
+                    organDragable.style.position = "absolute";
+                    organDragable.style.y = "0";
+                    organDragable.style.x = "0";
+                    organDragable.style.width = "100%";
+                    organDragable.style.height = "100%";
+                    organDragable.style.pointerEvents = "auto";
+                    organDragable.addEventListener("click", () => {
+                        this.selectedOrgan = organ;
+                        console.log("bieng");
+                    });
+                    hitbox.appendChild(organDragable);
+                });
+            }
+            this.playground[0].appendChild(hitbox);
         });
     }
 }
+;

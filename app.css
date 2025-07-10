@@ -95,36 +95,48 @@
     padding: 10px;
     max-width: 80px;
     max-height: 80px;
+    opacity: 0;
+
 }
 
 .organ2{
     padding: 10px;
     max-width: 80px;
     max-height: 80px;
+        opacity: 0;
+
 }
 
 .organ3{
     padding: 10px;
     max-width: 80px;
     max-height: 80px;
+        opacity: 0;
+
 }
 
 .organ4{
     padding: 10px;
     max-width: 80px;
     max-height: 80px;
+        opacity: 0;
+
 }
 
 .organ5{
     padding: 10px;
     max-width: 80px;
     max-height: 80px;
+        opacity: 0;
+
 }
 
 .organ6{
     padding: 10px;
     max-width: 80px;
     max-height: 80px;
+        opacity: 0;
+
 }
 
 .fontEnd{

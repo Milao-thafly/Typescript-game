@@ -17,18 +17,18 @@
 
 
 //
+import { organs } from "./organ.js";
+import { OrganHitbox } from "./hitbox.js";
 
 
-import {organs} from "./organ";
 
-
+//TIMER
 let seconds: number = 20;
 // Il va initialiser l'interval de nos chiffre à 0 pour le décompte
 let timerInterval: number | null = null;
 
-
 //La fonction va permettre de remplacer sur un padding a gauche par un caractère pour toujours être à deux chiffre.
-function padStartManual(str: string, targetLength: number,padChar: string): string {
+function padStartManual(str: string, targetLength: number, padChar: string): string {
     while (str.length < targetLength) {
         str = padChar + str
     }
@@ -39,11 +39,13 @@ function padStartManual(str: string, targetLength: number,padChar: string): stri
 //Ici on va initialiser le padChar des éléments concerné par notre variable de temps en premier lieux 
 //Lui dire qu'il nous faut en partant d'une conversion en string nos seconde. Qu'il faut toujours 2 chiffre d'affiché.
 //Que si on est sensé descendre à moins de deux chiffres. Garder le timer à deux en faisant un padding à gauche avec 0.
-const timer = padStartManual(String(seconds), 2,"0");
+const timer = padStartManual(String(seconds), 2, "0");
 //Ici on va faire une fonction qui ne return rien par un void. 
 // On va lui créer une constante au nom de timerElement en ciblant la div timer.
 // on va changer le texte de la div avec padStartManual plus en haut 
 function updateTimerDisplay(): void {
+    console.log("Timer updated to:", seconds);
+
     const timerElement = document.getElementById("timer");
     if (timerElement) {
         // padStartManual veux dire à quel moment je commence mon padding pour remplacer le troue par le 0.
@@ -55,6 +57,8 @@ function updateTimerDisplay(): void {
 
 //La on va dire dans une fonction que notre timer va commencer grace au chargement de la page. A changer 
 function startGameTimer(): void {
+    console.log("Starting timer...");
+
     //Ici on cible notre fonction updateTimerDisplay
     updateTimerDisplay();
 
@@ -71,7 +75,7 @@ function startGameTimer(): void {
 
             endGame();
         }
-    } ,1000)
+    }, 1000)
 }
 
 
@@ -88,34 +92,36 @@ function endGame(): void {
 
 
         //Ici on va lier une constante endmsgtarget à la div endText
-        const end_message_target = document.getElementById("endText"); 
+        const end_message_target = document.getElementById("endText");
         //Si la emt est pas null.
         if (end_message_target) {
-        //On fait une div et un paragraph avec un texte 
-        const divEndMessage:  HTMLDivElement = document.createElement("div");
-        const endMessage: HTMLParagraphElement = document.createElement("p");
-        endMessage.innerText = "1312 was to lowkey to win"
-        
+            //On fait une div et un paragraph avec un texte 
+            const divEndMessage: HTMLDivElement = document.createElement("div");
+            const endMessage: HTMLParagraphElement = document.createElement("p");
+            endMessage.innerText = "1312 was to lowkey to win"
 
-        // On lie la div a notre constante emt
-        end_message_target.appendChild(divEndMessage)
-        //on lie la div au paragraph
-        divEndMessage.appendChild(endMessage)
-        //Ici on fait disparaitre le timer avec un display none.
-        timerElement.classList.add("noTimer")
-        //Ici on applique le css fontEnd a notre divEndMessage.
-        divEndMessage.classList.add("fontEnd")
+
+            // On lie la div a notre constante emt
+            end_message_target.appendChild(divEndMessage)
+            //on lie la div au paragraph
+            divEndMessage.appendChild(endMessage)
+            //Ici on fait disparaitre le timer avec un display none.
+            timerElement.classList.add("noTimer")
+            //Ici on applique le css fontEnd a notre divEndMessage.
+            divEndMessage.classList.add("fontEnd")
         }
     };
 
-    
-        
-        
-        
-    
+
+
+
+
+
 }
 window.addEventListener("DOMContentLoaded", () => {
     startGameTimer();
+    new OrganLand();
+
 });
 
 
@@ -123,16 +129,77 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
-
+//CLASS POUR PLAYGROUND D'ORGAN
 export class OrganLand {
-    constructor(){
+    private selectedOrgan: OrganHitbox | null = null;
+    private playground: HTMLElement[] = [];
+
+    constructor() {
+        const play = document.querySelectorAll<HTMLElement>(".playground");
+        this.playground = Array.from(play)
+        // if(play){
+        //     throw new Error("ENCULÉ!!!!");
+
+        // }
+
         this.setupHitBox();
     }
 
     private setupHitBox() {
+
+        const margin = 20;
+
         organs.forEach((organ) => {
-            const hitbox: HTMLDivElement| null = document.createElement ("div")
+            const hitbox: HTMLDivElement = document.createElement("div");
+            hitbox.classList.add("hitbox")
+            hitbox.style.position = "absolute";
+            hitbox.style.left = `${organ.left}px`;
+            hitbox.style.top = `${organ.top}px`;
+            hitbox.style.width = `${organ.width + 20}px`;
+            hitbox.style.height = `${organ.height + 20}px`;
+            hitbox.style.zIndex = "3";
+
+            hitbox.addEventListener("click", (canDrag) => {
+                canDrag.stopPropagation();
+                this.selectedOrgan = organ;
+
+
+            })
+            if (organs !== null) {
+                organs.forEach((organs) => {
+                    const bod = document.getElementsByClassName("organInBody")
+                    const organDragable = document.createElement("img");
+                    organDragable.src = organ.imgSrc;
+                    organDragable.alt = organ.name;
+                    organDragable.classList.add("organs");
+
+                    organDragable.style.position = "absolute";
+                    organDragable.style.y = "0";
+                    organDragable.style.x = "0";
+                    organDragable.style.width = "100%";
+                    organDragable.style.height = "100%";
+                    organDragable.style.pointerEvents = "auto";
+
+                    organDragable.addEventListener("click", () => {
+                        this.selectedOrgan = organ;
+                        console.log("bieng");
+
+                    });
+                    hitbox.appendChild(organDragable);
+                })
+            }
+
+
+            this.playground[0].appendChild(hitbox)
         })
-    } 
-}
-export{}
+
+
+
+    }
+
+
+
+};
+
+
+export { }
