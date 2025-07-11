@@ -21,9 +21,12 @@ import { organs } from "./organ.js";
 import { OrganHitbox } from "./hitbox.js";
 
 
-
+const requiredOrgans = ["Heart", "Brain", "Stomach", "Lungs", "Gut", "Biceps"];
+let gameEnded = false;
+let gameVictory = true;
+let timers : 10;
 //TIMER
-let seconds: number = 20;
+let seconds: number = 10;
 // Il va initialiser l'interval de nos chiffre à 0 pour le décompte
 let timerInterval: number | null = null;
 
@@ -110,27 +113,58 @@ function endGame(): void {
             //Ici on applique le css fontEnd a notre divEndMessage.
             divEndMessage.classList.add("fontEnd")
         }
+        
+
     };
 
-
-
-
-
+    
 
 }
-window.addEventListener("DOMContentLoaded", () => {
-    startGameTimer();
-    new OrganLand();
 
-});
+//Non fonctionnel
+function checkVictoryCondition() {
+                const bucket = document.querySelector(".bucket");
+                if (!bucket || gameEnded) return;
 
+                const bucketOrgans = Array.from(bucket.querySelectorAll("img"))
+                    .map(img => img.dataset.name?.trim().toLowerCase() ?? "");
 
+                const allPresent = requiredOrgans.every((organ) =>
+                bucketOrgans
+                    .map(name => name.trim().toLowerCase())
+                    .indexOf(organ.toLowerCase()) !== -1
+                );
+                if (allPresent) {
+                    gameEnded = true;
+                    if (timerInterval !== null) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    }
 
+                    const endMessageTarget = document.getElementById("endText");
+                    if (endMessageTarget) {
+                    const div = document.createElement("div");
+                    const p = document.createElement("p");
+                    p.innerText = "Bravo, vous avez gagné ! 🎉";
+                    p.classList.add("fontEnd");
+                    div.appendChild(p);
+                    endMessageTarget.appendChild(div);
+                    }
+
+                    const timerElement = document.getElementById("timer");
+                    if (timerElement) {
+                    timerElement.textContent = "00";
+                    timerElement.classList.add("noTimer", "timer-finished");
+                    }
+                }
+}
 
 
 
 //CLASS POUR PLAYGROUND D'ORGAN
 export class OrganLand {
+    
+
     private selectedOrgan: OrganHitbox | null = null;
     private playground: HTMLElement[] = [];
 
@@ -148,7 +182,7 @@ export class OrganLand {
     private setupHitBox() {
 
         const margin = 20;
-
+        
         organs.forEach((organ) => {
             const hitbox: HTMLDivElement = document.createElement("div");
             hitbox.classList.add("hitbox")
@@ -165,20 +199,26 @@ export class OrganLand {
 
 
             })
-            if (organs !== null) {
-                organs.forEach((organs) => {
-                    const bod = document.getElementsByClassName("organInBody")
+            // if (organs !== null) {
+            //     organs.forEach((organs) => {
+                    
+            //     })
+            // }
+
+            const bod = document.getElementsByClassName("organInBody")
                     const organDragable = document.createElement("img");
                     organDragable.src = organ.imgSrc;
                     organDragable.alt = organ.name;
                     organDragable.classList.add("organs");
 
-                    organDragable.style.position = "absolute";
-                    organDragable.style.y = "0";
-                    organDragable.style.x = "0";
+                    // organDragable.style.position = "absolute";
+                    organDragable.style.top = "0";
+                    organDragable.style.left = "0";
                     organDragable.style.width = "100%";
                     organDragable.style.height = "100%";
                     organDragable.style.pointerEvents = "auto";
+                    organDragable.style.cursor = "grab";
+                    organDragable.style.zIndex = "10"
 
                     organDragable.addEventListener("click", () => {
                         this.selectedOrgan = organ;
@@ -189,20 +229,20 @@ export class OrganLand {
                     organDragable.dataset.name = organ.name;
 
                     organDragable.addEventListener("dragstart", (drag) => {
+                        console.log("dragstart", organ.name)
                         drag.dataTransfer?.setData("text/plain", organ.name)
                     })
                     hitbox.appendChild(organDragable);
-                })
-            }
-
-
-            this.playground[0].appendChild(hitbox)
+                    this.playground[0].appendChild(hitbox)
+                    if (!this.playground[0]) {
+    throw new Error("playground not found !");
+}
 
             
         })
+                this.setupHitboxDrop();
 
-
-
+        
     }
 
     private setupBucketDrop(): void {
@@ -223,15 +263,66 @@ export class OrganLand {
 
             draggedOrgans.forEach((organ) => {
                 if(organ instanceof HTMLImageElement && organ.dataset.name === organName) {
-                    organ.style.opacity = "0";
-                    organ.style.pointerEvents = "none";
+                    // organ.style.opacity = "0";
+                    // organ.style.pointerEvents = "none";
+                    organ.remove();
+
+                    const organInBucket = document.createElement("img");
+                    organInBucket.src = organ.src;
+                    organInBucket.alt = organ.alt;
+                    organInBucket.classList.add("organs");
+                    organInBucket.dataset.name = organName;
+                    organInBucket.style.opacity = "1";
+                    organInBucket.style.width = "50px"
+
+                    bucket.appendChild(organInBucket);
+
                 }
             })
         })
+
+       
         
+    }
+
+    private setupHitboxDrop(): void {
+        const hitboxes = document.querySelectorAll<HTMLElement>(".hitbox");
+
+        hitboxes.forEach((hitbox) => {
+            hitbox.addEventListener("dragover", (draghitbox) => {
+                draghitbox.preventDefault();
+            });
+
+            hitbox.addEventListener("drop", (dropedhit) => {
+                dropedhit.preventDefault();
+
+                const organName = dropedhit.dataTransfer?.getData("text/plain");
+                if (!organName) return;
+
+                const draggedOrgans = document.querySelectorAll<HTMLElement>(".organs");
+
+                draggedOrgans.forEach((organImg) => {
+                    if (
+                        organImg.dataset.name === organName &&
+                        organImg.parentElement !== hitbox
+
+                    ) {
+                        organImg.remove
+                        organImg.style.opacity = "1";
+                        organImg.style.pointerEvents = "none";
+                        hitbox.appendChild(organImg);
+                    }
+                })
+            })
+        })
+        checkVictoryCondition(); 
     }
 
 };
 
+window.addEventListener("DOMContentLoaded", () => {
+    startGameTimer();
+    new OrganLand();
 
+});
 export { }

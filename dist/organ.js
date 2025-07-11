@@ -6,4 +6,3 @@ export const organs = [
     { name: "Gut", left: 730, top: 630, width: 60, height: 60, imgSrc: "./img/svg/large-intestine-removebg-preview.png" },
     { name: "Biceps", left: 720, top: 720, width: 60, height: 60, imgSrc: "./img/svg/testicle-removebg-preview.png" },
 ];
-top;

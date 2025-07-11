@@ -58,12 +58,17 @@
 
 .bucket{
    position: absolute;
+   background-image: url(./img/svg/Frame1.png);
+   bottom: 20px;
+   right: -70px;
+   width: 180px;
+   height: 950px;
     top: 50%;
-    right: -5%;
+    
     transform: translate(-50%, -50%);
     max-width: 181px;
     max-height: 950px;
-    z-index: 1; 
+    z-index: 10; 
 }
 
 .allOrgan{
